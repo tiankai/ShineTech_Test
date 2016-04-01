@@ -1,0 +1,170 @@
+﻿<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+
+<%@ Master Language="C#" Inherits="System.Web.Mvc.ViewMasterPage" ClassName="AdminMaster" %>
+<!DOCTYPE html>
+<script runat="server">
+
+    private const string keyUserName = "UName";
+
+    private TaskTest_Web.Models.LogOnModel _loginUser;
+
+    private TaskTest_Web.Models.AdminMenusModel _menuModel;
+
+    private TaskTest_Web.Models.IMenuQuery _menuQuery;
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (Page.IsPostBack == false)
+        {
+            var webRoute = Page.RouteData;
+            string actionName = webRoute.GetRequiredString("action");
+            string nameHashValue = GetUserName(keyUserName);
+            //
+            if (string.IsNullOrEmpty(nameHashValue) == true)
+            {
+                // 需要登陆
+                JumpToLogin();
+            }
+            else // 存在哈希值 去服务端校验
+            {
+                _loginUser = this.Context.Session[nameHashValue] as TaskTest_Web.Models.LogOnModel;
+                if (_loginUser == null) // 服务端已经过期
+                {
+                    // 需要登陆
+                    JumpToLogin();
+                }
+                else // 已在服务端登陆
+                {
+                    ViewData[keyUserName] = _loginUser.UserName;
+                    // 加载菜单信息
+                    _menuModel = LoadMenus(actionName);
+                }
+            }
+        }
+    }
+    
+    private void JumpToLogin()
+    {
+        HttpContext.Current.Response.Redirect("Account/LogOn", true);
+        //this.Context.Response.RedirectToRoute(new Route("Account/LogOn", new MvcRouteHandler()));
+    }
+    /// <summary>
+    /// 加载系统菜单
+    /// </summary>
+    /// <returns></returns>
+    private TaskTest_Web.Models.AdminMenusModel LoadMenus(string actionName)
+    {
+        var menuSubCreateUser = new TaskTest_Web.Models.SubMenuInfo() { parentId = 0, MenuName = "创建用户", ActionName = "Register", ControllerName = "Account" };
+        var menuMainTask = new TaskTest_Web.Models.MainMenuInfo() { MenuId = 2, MenuName = "任务管理" };
+        //
+        var menuSubCreateTask = new TaskTest_Web.Models.SubMenuInfo() { parentId = 2, MenuName = "新建任务", ActionName = "NewTask", ControllerName = "Admin" };
+        var menuSubAsssignTask = new TaskTest_Web.Models.SubMenuInfo() { parentId = 2, MenuName = "分配任务", ActionName = "AssignTask", ControllerName = "Admin" };        
+        // AdminMenus
+        var adminMenus = new List<TaskTest_Web.Models.SubMenuInfo>();
+        adminMenus.Add(menuSubCreateUser);
+        // MainMenus
+        var mainMenus = new List<TaskTest_Web.Models.MainMenuInfo>();
+        mainMenus.Add(menuMainTask);
+        // ChildMenus
+        var childMenus = new List<TaskTest_Web.Models.SubMenuInfo>();
+        childMenus.Add(menuSubCreateTask);
+        childMenus.Add(menuSubAsssignTask);
+        //         
+        var sysMenu = new TaskTest_Web.Models.AdminMenusModel() { AdminMenus = adminMenus, MainMenus = mainMenus, ChildMenus = childMenus, selectedAction = actionName };
+        
+        return sysMenu;
+    }
+    /// <summary>
+    /// 获取客户端用户名称
+    /// </summary>
+    /// <param name="keyName">用户名称KeyName</param>
+    /// <returns>空:未登陆,服务端生成的哈希值</returns>
+    private string GetUserName(string keyName)
+    {
+        var cookie = HttpContext.Current.Request.Cookies[keyName];
+        if (cookie != null && !string.IsNullOrEmpty(cookie.Value))
+        {
+            return cookie.Value;
+        }
+        else
+        {
+            return string.Empty;
+        }
+    }
+    
+</script>
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>后台管理界面</title>    
+    <link href="<%: Url.Content("~/Content/bootstrap.css") %>" rel="stylesheet" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+    </style>
+    <link href="<%: Url.Content("~/Content/bootstrap-responsive.css") %>" rel="stylesheet" />
+    <link href="<%: Url.Content("~/Content/Admin.css") %>" rel="stylesheet" />
+    <script type="text/javascript" language="javascript" src="<%: Url.Content("~/Scripts/jquery-1.6.2.min.js") %>"></script>
+    <script type="text/javascript" language="javascript" src="<%: Url.Content("~/Scripts/angular-1.4.6.min.js") %>"></script>
+    <asp:ContentPlaceHolder ID="CssJsContent" runat="server" />
+</head>
+<body>
+ <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">任务管理</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+                <% Html.RenderPartial("LogOnUserControl", ViewData[keyUserName]); %>
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <% Html.RenderPartial("AdminMenu", _menuModel); %>
+        </div><!--/span-->
+        <div class="span9">
+          <div class="hero-unit">
+            <div>
+
+            </div>
+            <div>            
+                <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+            </div>
+          </div>
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <% Html.RenderPartial("Footer"); %>
+    </div>
+    
+</body>
+</html>

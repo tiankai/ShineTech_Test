@@ -1,0 +1,157 @@
+﻿
+#Admin-Main
+{
+    padding: 30px 30px 15px 30px;
+    background-color: #fff;
+    margin-bottom: 30px;
+    height: 900px;
+}
+#tinyBoxCover
+{
+    position:absolute; 
+	width: 250px; 
+	height:123px; 
+	background:#FFF; 
+	display: none; 
+	z-index: 99999; 
+	display:none; 
+	text-align:center;
+}
+    #tinyBoxCover .tanchu
+	{
+		font-family:'微软雅黑'; font-size:18px; text-align:center; margin-top:50px;
+	}
+#Admin-Main .MasterHeight
+{
+    height: 98%;
+}
+/* 左侧区域 */
+#main-AdminLeft
+{
+    float: left;
+    width: 250px; 
+    border: 1px solid #8cb7a0;
+}
+    /*   系统菜单 css **/
+    #AdminMenu
+    {
+        width: 230px;
+        padding: 10px;
+    }
+        #AdminMenu .MainMenu
+        {
+            width: 210px;
+            height: 30px;
+            font-size: 18px;
+            padding-top: 8px;
+            padding-left: 20px;
+            margin-bottom: 15px;
+            color: blue;
+            background-color: #8cb7a0;
+        }
+        #AdminMenu .SubMenu
+        {
+            width: 280px;
+            height: 24px;
+            font-size: 18px;
+            color: #ccff88;
+            margin-left: 15px;   
+            margin-bottom: 8px;       
+        }
+             #SelectedMenu
+             {
+                width: 280px;
+                height: 24px;
+                font-size: 18px;
+                margin-left: 15px;   
+                margin-bottom: 8px;    
+             }
+                #SelectedMenu a
+                {
+                    color: Red;
+                }
+            /* 右侧区域 */
+#main-AdminRight
+{
+    float: right;
+    width: 870px;
+    border: 1px solid #c9a0ff;   
+}
+    #main-AdminRight .LeftGap
+    {
+        margin-left: 20px;
+        margin-top: 20px;        
+        width: 95%;
+        float: left;
+    }
+    #main-AdminRight .ZoneGapPic
+    {
+        width: 820px;
+        height: 1px;
+        margin-top: 10px;
+        margin-left: 20px;
+        background-color: #0099ff;
+    }
+    #main-AdminRight .LogicZone
+    {
+        width: 600px;
+        float: left;
+        padding-left: 290px;
+        padding-top: 20px;
+    }
+
+        #TaskTree {
+
+            position: relative;
+            width: auto;
+            display: none;
+            background-color: #5c87b2;
+            /*
+            filter:alpha(Opacity=80);
+            -moz-opacity:0.75;
+            opacity: 0.75;
+            */
+        }
+    #main-AdminRight .treeNodeTask {
+
+        float: left;
+        padding-left: 8px;
+        width: auto;
+        height: 25px;
+    }
+        #main-AdminRight .treeNodeTask .nodeItem {
+
+            float: left;
+            margin-left: 3px;
+            width: 90px;
+            height: 20px;
+            text-align:center;
+        }
+     
+    #main-AdminRight .TableTitleBG
+    {
+        background-color: #5c87b2;
+        color: White;
+    }
+    
+    #main-AdminRight .TableOddLine
+    {
+        background-color: #e1f9fb;
+    }
+    
+    #main-AdminRight .TableSelectLine
+    {
+        background-color: #80af97;        
+    }
+        #QueryHotelCondition
+        {
+            margin-left: 15px;
+            margin-top: 10px;
+            width: 845px;
+            height: 30px;   
+        }
+            #QueryHotelCondition .divCss
+            {
+                float: left;
+                margin-left: 5px;
+            }

@@ -1,0 +1,7 @@
+﻿.pager-bar {height: 20px;line-height:20px;}
+.pager-bar span {font-weight:bold;}
+.pager-bar .pagerPage{display: inline-block;height:20px; width:20px; text-align:center;margin:0 2px;border:1px solid #9BB3FF;}
+.pager-bar .currentPage{border:none;}
+.pager-bar .firstPage, .pager-bar .lastPage{font-weight:bold;}
+.pager-bar .pagerPrefix, .pager-bar .pagerSubfix{width: 60px; border: 1px solid #9BB3FF;}
+

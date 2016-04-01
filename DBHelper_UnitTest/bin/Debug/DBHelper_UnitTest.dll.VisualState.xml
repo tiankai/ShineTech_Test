@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VisualState xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ShowCheckBoxes="false">
+  <TopNode>[0-1004]F:\WorkSpace\TaskTest_Web\DBHelper_UnitTest\bin\Debug\DBHelper_UnitTest.dll</TopNode>
+  <SelectedNode>[0-1003]DBHelper_UnitTest.SimpleDBHelper_UnitTest.Test_ExecuteDataReader</SelectedNode>
+  <ExcludeCategories>false</ExcludeCategories>
+  <Nodes>
+    <Node UniqueName="[0-1004]F:\WorkSpace\TaskTest_Web\DBHelper_UnitTest\bin\Debug\DBHelper_UnitTest.dll" Expanded="true" />
+    <Node UniqueName="[0-1005]DBHelper_UnitTest" Expanded="true" />
+    <Node UniqueName="[0-1000]DBHelper_UnitTest.SimpleDBHelper_UnitTest" Expanded="true" />
+  </Nodes>
+</VisualState>

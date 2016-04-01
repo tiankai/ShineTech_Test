@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="F:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\TaskLogic_UnitTest.dll" total="1" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2016-03-19" time="17:43:40">
+  <environment nunit-version="2.6.4.14350" clr-version="4.0.30319.17929" os-version="Microsoft Windows NT 6.1.7600.0" platform="Win32NT" cwd="C:\Program Files\NUnit 2.6.4\bin" machine-name="K13" user="Administrator" user-domain="K13" />
+  <culture-info current-culture="zh-CN" current-uiculture="zh-CN" />
+  <test-suite type="Assembly" name="F:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\TaskLogic_UnitTest.dll" executed="True" result="Success" success="True" time="1.228" asserts="0">
+    <results>
+      <test-suite type="Namespace" name="TaskLogic_UnitTest" executed="True" result="Success" success="True" time="1.212" asserts="0">
+        <results>
+          <test-suite type="TestFixture" name="SimpleTaskLogic_UnitTest" executed="True" result="Success" success="True" time="1.210" asserts="0">
+            <results>
+              <test-case name="TaskLogic_UnitTest.SimpleTaskLogic_UnitTest.Test_CreateMission" executed="True" result="Success" success="True" time="1.192" asserts="1" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>
