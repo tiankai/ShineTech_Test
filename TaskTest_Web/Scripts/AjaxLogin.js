@@ -77,7 +77,7 @@ $(function () {
     };
 
     // List of link ids to have an ajax dialog
-    var links = ['logonLink', 'registerLink'];
+    var links = ['logonLink', 'registerLink', 'taskLink'];
 
     $.each(links, function (i, id) {
         $('#' + id).click(function (e) {

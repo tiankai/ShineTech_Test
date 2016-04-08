@@ -44,7 +44,6 @@ namespace TaskLogic
         /// 任务编号
         /// </summary>
         public int TaskId { get; set; }
-
         /// <summary>
         /// 任务标题
         /// </summary>
@@ -113,6 +112,12 @@ namespace TaskLogic
         /// <param name="taskId"></param>
         /// <returns></returns>
         bool AcceptMission(int taskId);
+        /// <summary>
+        /// 拒绝任务
+        /// </summary>
+        /// <param name="taskId"></param>
+        /// <returns></returns>
+        bool RejectMission(int taskId);
         /// <summary>
         /// 任务完结
         /// </summary>

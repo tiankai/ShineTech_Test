@@ -11,6 +11,9 @@
 %>
             <ul>
                 <li>
+                    <%: Html.ActionLink("TaskTree", "GetTaskTree", "Admin", routeValues: null, htmlAttributes: new { id = "taskLink", data_dialog_title = "TaskTree" })%>
+                </li>
+                <li>
                     <%: Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", data_dialog_title = "Registration" })%>
                 </li>
                 <li>

@@ -16,6 +16,12 @@ namespace TaskTest_Web.Controllers
 
         private IUserAuth _userAuth;
 
+        protected override void Initialize(RequestContext requestContext)
+        {
+            _userAuth = UserAuth.GetInstance();
+
+            base.Initialize(requestContext);
+        }
         //
         // GET: /Account/LogOn
 
@@ -23,7 +29,6 @@ namespace TaskTest_Web.Controllers
         {
             return ContextDependentView();
         }
-
 
         private string CalcHash(string text)
         {
@@ -49,7 +54,6 @@ namespace TaskTest_Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _userAuth = UserAuth.GetInstance();
                 if (_userAuth.UserLogin(model))
                 {
                     string hashName = SetUserCookie(model, 6);                    
@@ -75,7 +79,6 @@ namespace TaskTest_Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _userAuth = UserAuth.GetInstance();
                 if (_userAuth.UserLogin(model))
                 {
                     string hashName = SetUserCookie(model, 6);   
@@ -106,12 +109,16 @@ namespace TaskTest_Web.Controllers
         {
             var userCookies = HttpContext.Request.Cookies;
             var userCookie = userCookies.Get(CookieName);
-            string hashName = userCookie.Value;
             // 
-            if (string.IsNullOrEmpty(hashName) == false)
+            if(userCookie != null)
             {
-                HttpContext.Session.Remove(hashName);
-            }
+                string hashName = userCookie.Value;
+                // 
+                if (string.IsNullOrEmpty(hashName) == false)
+                {
+                    HttpContext.Session.Remove(hashName);
+                }
+            }            
 
             return RedirectToAction("Index", "Home");
         }
@@ -170,6 +177,17 @@ namespace TaskTest_Web.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }       
+
+        public string GetUserList(string name)
+        {
+            var users = _userAuth.GetUserList(name);
+
+            var jsonUsers = this.Json(users);
+
+            string jsonStr = jsonUsers.Data.ToString();
+
+            return jsonStr;
+        }
 
         private ActionResult ContextDependentView()
         {

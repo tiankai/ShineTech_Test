@@ -1,0 +1,38 @@
+﻿.TaskRootNode
+{
+    margin-top: 5px;
+    text-decoration:  line-through;
+}        
+
+.TaskChildrenNodes
+{
+    position: relative;
+    margin-top: 0px;
+    margin-left: 0px;
+}
+    .TaskRootNode .leftGap
+    {
+        float: left;
+        margin-right: 8px;
+    }
+    .TaskRootNode .eachItem
+    {
+        float: left;
+        margin-left: 0px;
+        margin-right: 15px;
+    }
+    .TaskChildrenNodes .leftFlag
+    {
+       float: left;
+       margin-left: 10px;
+       margin-right: 5px; 
+    }
+         .oddSubNode
+         {
+            color: blue;
+         }
+
+         .evenSubNode
+         {
+            color: #33aacc;
+         }

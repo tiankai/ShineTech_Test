@@ -205,6 +205,95 @@ namespace DBHelper
             return ExecuteScalar<int>(sqlText, parameters);
         }
 
+        public bool ExecuteCmdSqls(params string[] cmdSqls)
+        {
+            bool flag = true;
+            int count = 0;
+            var trans = _con.BeginTransaction();
+            try
+            {
+                using (var cmd = _con.CreateCommand())
+                {
+                    foreach(string sql in cmdSqls)
+                    {
+                        cmd.CommandText = sql;
+                        int result = cmd.ExecuteNonQuery();
+                        if(result > 0)
+                        {
+                            count++;
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                count = -1;
+                _loger.LogError("SimpleDBHelper.ExecuteCmdSqls(params string[])", "", ex);
+            }
+            finally
+            {
+                if (count == cmdSqls.Length)
+                {
+                    trans.Commit();
+                }
+                else
+                {
+                    flag = false;
+                    trans.Rollback();
+                }                
+            }
+
+            return flag;
+        }
+
+        public bool ExecuteCmdParamsSql(params CmdSqlStruct[] cmdSqls)
+        {
+            bool flag = true;
+            int count = 0;
+            var trans = _con.BeginTransaction();
+            try
+            {
+                using (var cmd = _con.CreateCommand())
+                {
+                    foreach (var cmdSql in cmdSqls)
+                    {
+                        cmd.Parameters.Clear();
+                        cmd.CommandText = cmdSql.CmdSql;
+                        // 
+                        foreach(var p in cmdSql.Parameters)
+                        {
+                            cmd.Parameters.Add(p);
+                        }
+                        //
+                        int result = cmd.ExecuteNonQuery();
+                        if (result > 0)
+                        {
+                            count++;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                count = -1;
+                _loger.LogError("SimpleDBHelper.ExecuteCmdParamsSql(params CmdSqlStruct[])", "", ex);
+            }
+            finally
+            {
+                if (count == cmdSqls.Length)
+                {
+                    trans.Commit();
+                }
+                else
+                {
+                    flag = false;
+                    trans.Rollback();
+                }
+            }
+
+            return flag;
+        }
+
         public void Dispose()
         {
             if (_con.State == ConnectionState.Open)

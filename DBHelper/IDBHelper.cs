@@ -18,6 +18,13 @@ namespace DBHelper
         Sqlite
     }
 
+    public struct CmdSqlStruct
+    {
+        public string CmdSql { get; set; }
+
+        public IDataParameter[] Parameters { get; set; }
+    }
+
     public interface IDBHelper
     {
         /// <summary>
@@ -27,12 +34,24 @@ namespace DBHelper
         /// <returns></returns>
         int ExecuteSql(string sqlText);
         /// <summary>
+        /// 执行多个sql语句
+        /// </summary>
+        /// <param name="cmdSqls">[增加、删除、修改]sql命令</param>
+        /// <returns></returns>
+        bool ExecuteCmdSqls(params string[] cmdSqls);
+        /// <summary>
         /// 执行sql语句，并返回受影响的行数
         /// </summary>
         /// <param name="sqlText">sql语句</param>
         /// <param name="parameters">参数</param>
         /// <returns></returns>
         int ExecuteSql(string sqlText, params IDataParameter[] parameters);
+        /// <summary>
+        /// 执行多个sql语句
+        /// </summary>
+        /// <param name="cmdSqls">[增加、删除、修改]sql命令</param>
+        /// <returns></returns>
+        bool ExecuteCmdParamsSql(params CmdSqlStruct[] cmdSqls);
         /// <summary>
         /// 返回结果集的第一行第一列
         /// </summary>

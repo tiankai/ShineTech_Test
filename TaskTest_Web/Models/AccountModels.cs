@@ -24,6 +24,12 @@ namespace TaskTest_Web.Models
         /// <param name="model"></param>
         /// <returns></returns>
         bool RegisterUser(RegisterModel model);
+        /// <summary>
+        /// 查找用户列表
+        /// </summary>
+        /// <param name="userName">null or empty 返回所有用户, 不为空返回模糊匹配的用户</param>
+        /// <returns></returns>
+        UserListViewModel GetUserList(string userName);
     }
 
     public class UserAuth : IUserAuth
@@ -55,6 +61,12 @@ namespace TaskTest_Web.Models
             return true;
         }
 
+        public UserListViewModel GetUserList(string userName)
+        {
+            var model = new UserListViewModel() { UserId = new int[] { 33, 3 }, UserName = new string[] { "Wesley", "Tom" }, UserCount = 2, SelectedUserIndex = -1 };
+            
+            return model;
+        }
         
     }
 
@@ -75,6 +87,17 @@ namespace TaskTest_Web.Models
         [Display(Name = "Confirm new password")]
         [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+    }
+
+    public class UserListViewModel
+    {
+        public int[] UserId { get; set; }
+
+        public string[] UserName { get; set; }
+
+        public int UserCount { get; set; }
+
+        public int SelectedUserIndex { get; set; }
     }
 
     public class LogOnModel

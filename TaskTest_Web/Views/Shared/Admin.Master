@@ -46,8 +46,7 @@
     
     private void JumpToLogin()
     {
-        HttpContext.Current.Response.Redirect("Account/LogOn", true);
-        //this.Context.Response.RedirectToRoute(new Route("Account/LogOn", new MvcRouteHandler()));
+        HttpContext.Current.Response.Redirect("~/Account/LogOn", true);
     }
     /// <summary>
     /// 加载系统菜单
@@ -55,11 +54,11 @@
     /// <returns></returns>
     private TaskTest_Web.Models.AdminMenusModel LoadMenus(string actionName)
     {
-        var menuSubCreateUser = new TaskTest_Web.Models.SubMenuInfo() { parentId = 0, MenuName = "创建用户", ActionName = "Register", ControllerName = "Account" };
-        var menuMainTask = new TaskTest_Web.Models.MainMenuInfo() { MenuId = 2, MenuName = "任务管理" };
+        var menuSubCreateUser = new TaskTest_Web.Models.SubMenuInfo() { parentId = 0, MenuName = "User Add", ActionName = "Register", ControllerName = "Account" };
+        var menuMainTask = new TaskTest_Web.Models.MainMenuInfo() { MenuId = 2, MenuName = "Menus" };
         //
-        var menuSubCreateTask = new TaskTest_Web.Models.SubMenuInfo() { parentId = 2, MenuName = "新建任务", ActionName = "NewTask", ControllerName = "Admin" };
-        var menuSubAsssignTask = new TaskTest_Web.Models.SubMenuInfo() { parentId = 2, MenuName = "分配任务", ActionName = "AssignTask", ControllerName = "Admin" };        
+        var menuSubCreateTask = new TaskTest_Web.Models.SubMenuInfo() { parentId = 2, MenuName = "New Task", ActionName = "NewTask", ControllerName = "Admin" };
+        var menuSubMyTask = new TaskTest_Web.Models.SubMenuInfo() { parentId = 2, MenuName = "My Task", ActionName = "Index", ControllerName = "Admin" };        
         // AdminMenus
         var adminMenus = new List<TaskTest_Web.Models.SubMenuInfo>();
         adminMenus.Add(menuSubCreateUser);
@@ -69,7 +68,7 @@
         // ChildMenus
         var childMenus = new List<TaskTest_Web.Models.SubMenuInfo>();
         childMenus.Add(menuSubCreateTask);
-        childMenus.Add(menuSubAsssignTask);
+        childMenus.Add(menuSubMyTask);
         //         
         var sysMenu = new TaskTest_Web.Models.AdminMenusModel() { AdminMenus = adminMenus, MainMenus = mainMenus, ChildMenus = childMenus, selectedAction = actionName };
         
@@ -118,8 +117,13 @@
     </style>
     <link href="<%: Url.Content("~/Content/bootstrap-responsive.css") %>" rel="stylesheet" />
     <link href="<%: Url.Content("~/Content/Admin.css") %>" rel="stylesheet" />
-    <script type="text/javascript" language="javascript" src="<%: Url.Content("~/Scripts/jquery-1.6.2.min.js") %>"></script>
-    <script type="text/javascript" language="javascript" src="<%: Url.Content("~/Scripts/angular-1.4.6.min.js") %>"></script>
+    <link href="<%: Url.Content("~/Content/themes/base/jquery.ui.all.css") %>" rel="stylesheet" type="text/css" />
+
+    <script src="<%: Url.Content("~/Scripts/angular-1.4.6.min.js") %>" type="text/javascript"></script>
+    <script src="<%: Url.Content("~/Scripts/jquery-1.6.2.min.js") %>" type="text/javascript"></script>
+    <script src="<%: Url.Content("~/Scripts/jquery-ui-1.8.11.js") %>" type="text/javascript"></script>
+    <script src="<%: Url.Content("~/Scripts/modernizr-2.0.6-development-only.js") %>" type="text/javascript"></script>
+    <script src="<%: Url.Content("~/Scripts/TaskTree.js") %>" type="text/javascript"></script>
     <asp:ContentPlaceHolder ID="CssJsContent" runat="server" />
 </head>
 <body>

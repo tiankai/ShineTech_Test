@@ -25,6 +25,12 @@ namespace TaskLogic
             _loger = loger;
         }
 
+        public SimpleTaskLogic(string tableStr, string conStr)
+        {
+            _tableStr = tableStr;
+            _loger = new TaskLoger.TaskLoger();
+            _dbHelper = new DBHelper.SimpleDBHelper(DBHelper.DB_Type.SqlServer, conStr, _loger);
+        }
         /// <summary>
         /// 组合字段列表
         /// </summary>
@@ -129,6 +135,12 @@ namespace TaskLogic
         }
 
         public int QueryUserMissionCount(int userId)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public bool RejectMission(int taskId)
         {
             throw new NotImplementedException();
         }
