@@ -21,10 +21,6 @@
 	{
 		font-family:'微软雅黑'; font-size:18px; text-align:center; margin-top:50px;
 	}
-#Admin-Main .MasterHeight
-{
-    height: 98%;
-}
 /* 左侧区域 */
 #main-AdminLeft
 {
@@ -72,10 +68,7 @@
                 }
             /* 右侧区域 */
 #main-AdminRight
-{
-    float: right;
-    width: 870px;
-    border: 1px solid #c9a0ff;   
+{  
 }
     #main-AdminRight .LeftGap
     {
@@ -99,34 +92,22 @@
         padding-left: 290px;
         padding-top: 20px;
     }
-
-        #TaskTree {
-
-            position: relative;
-            width: auto;
-            display: none;
-            background-color: #5c87b2;
-            /*
-            filter:alpha(Opacity=80);
-            -moz-opacity:0.75;
-            opacity: 0.75;
-            */
-        }
-    #main-AdminRight .treeNodeTask {
-
+    
+    #main-AdminRight .ItemGaps
+    {        
         float: left;
-        padding-left: 8px;
-        width: auto;
-        height: 25px;
+        margin-left: 15px;
     }
-        #main-AdminRight .treeNodeTask .nodeItem {
 
-            float: left;
-            margin-left: 3px;
-            width: 90px;
-            height: 20px;
-            text-align:center;
-        }
+    #main-AdminRight .selectCtrl {
+
+        width: auto;
+        height: 22px;
+        margin-left: 5px;
+        margin-top: 5px;
+        font-size: 12px;
+    }
+          
      
     #main-AdminRight .TableTitleBG
     {

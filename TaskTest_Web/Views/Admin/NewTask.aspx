@@ -4,39 +4,117 @@
 
     <script src="<%: Url.Content("~/Scripts/jquery.validate.min.js") %>" type="text/javascript"></script>
     <script src="<%: Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js") %>" type="text/javascript"></script>
+    <script src="<%: Url.Content("~/Scripts/xRule.js") %>" type="text/javascript"></script>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $('#TaskTitle').bind('blur', function () {
+
+                var url = "/Task/ValidateName?name=" + $(this).val();
+                // 
+                $.get(url, function (data) {
+
+                    $("#taskTitleIsExists").val(data);
+                });
+            });
+
+            $.validator.addMethod("TitleUniqueCheck", function () {
+
+                var isExist = parseInt($('#taskTitleIsExists').val());
+                if(isExist == 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }, "Task Title already exists!");
+
+            $.validator.addMethod("TaskTitleLengthCheck", function (value, element) {
+
+                var len = getByteLen(value);
+                if (len > 40) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }, "Task Title exceeds 40 bytes!");
+
+            $.validator.addMethod("TaskDesLengthCheck", function (value, element) {
+
+                var len = getByteLen(value);
+                if (len > 512) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }, "Task Description exceeds 512 bytes!");
+
+            $('#NewTaskForm').validate({
+                rules: {
+                    TaskTitle: {
+                        TaskTitleLengthCheck: true,
+                        TitleUniqueCheck: true
+                    },
+                    TaskDescription: {
+                        TaskDesLengthCheck: true
+                    }
+                }
+            });
+        });
+    </script>
     <div>
     <%: Html.ValidationSummary(true, "Create Task failed, Please correct the errors and try again." ) %>
 
-    <% using (Html.BeginForm("NewTask", "Admin")) { %>
+    <% using (Html.BeginForm("NewTask", "Admin", FormMethod.Post, new { @id = "NewTaskForm" }))
+       { %>
     <fieldset>
         <legend>
-            Create New Task
+            Create <%: Model.IsTopTask ? "TopNode Task" : "SubNode Task Depends on a Task"%>
         </legend>
-        <ol>
+        <ul>
             <li>
-                <%: Html.LabelFor(m => m.TaskTitle) %>
-                <%: Html.TextBoxFor(m => m.TaskTitle) %>
-                <%: Html.ValidationMessageFor(m => m.TaskTitle) %>
+                <%: Html.LabelFor(m => m.TaskTitle)%>
+                <%: Html.TextBoxFor(m => m.TaskTitle, new { @class = "TaskTitleLengthCheck TitleUniqueCheck" })%>
+                <%: Html.ValidationMessageFor(m => m.TaskTitle)%>
             </li>
             <li>
-                <%: Html.LabelFor(m => m.Priority) %>
-                <%: Html.DropDownListFor(m => m.Priority, new SelectList(new List<TaskTest_Web.Models.TaskPriority>(){ TaskTest_Web.Models.TaskPriority.High, TaskTest_Web.Models.TaskPriority.Senior, TaskTest_Web.Models.TaskPriority.Top }, TaskTest_Web.Models.TaskPriority.Senior)) %>                
+                <%: Html.LabelFor(m => m.Priority)%>
+                <%: Html.DropDownListFor(m => m.Priority,
+                        new SelectList(
+                            new List<TaskTest_Web.Models.TaskPriority>(){
+                                TaskTest_Web.Models.TaskPriority.High, 
+                                TaskTest_Web.Models.TaskPriority.Senior, 
+                                TaskTest_Web.Models.TaskPriority.Top,
+                                TaskTest_Web.Models.TaskPriority.Junior,
+                                TaskTest_Web.Models.TaskPriority.Low,
+                                TaskTest_Web.Models.TaskPriority.None
+                            }, TaskTest_Web.Models.TaskPriority.High
+                        )
+                    )%>                
             </li>
             <li>
-                <%: Html.LabelFor(m => m.DueTime) %>
-                <%: Html.TextBoxFor(m => m.DueTime) %>
-                <%: Html.ValidationMessageFor(m => m.DueTime) %>
+                <%: Html.LabelFor(m => m.DueTime)%>
+                <%: Html.EditorFor(m => m.DueTime, new { @type = "date" })%>
+                <%: Html.ValidationMessageFor(m => m.DueTime)%>
             </li>
             <li>
-                <%: Html.LabelFor(m => m.TaskDescription) %>
-                <%: Html.TextAreaFor(m => m.TaskDescription) %>
+                <%: Html.LabelFor(m => m.TaskDescription)%>
+                <%: Html.TextAreaFor(m => m.TaskDescription, new { @class = "TaskDesLengthCheck" })%>
+                <%: Html.ValidationMessageFor(m => m.TaskDescription) %>
             </li>
-        </ol>
+        </ul>
         <input type="submit" value="New Task" title="New Task" />
-        <%: Html.HiddenFor(m => m.ParentTaskId) %>
+        <input id="taskTitleIsExists" type="hidden" value="0" />
+        <%: Html.HiddenFor(m => m.ParentTaskId)%>
     </fieldset>
     <% } %>
     </div>

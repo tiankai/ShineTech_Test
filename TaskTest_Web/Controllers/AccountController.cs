@@ -54,8 +54,10 @@ namespace TaskTest_Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_userAuth.UserLogin(model))
+                int userId = _userAuth.UserLogin(model);
+                if (userId > 0)
                 {
+                    model.UserId = userId;
                     string hashName = SetUserCookie(model, 6);                    
                     HttpContext.Session.Add(hashName, model);
 
@@ -79,8 +81,10 @@ namespace TaskTest_Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_userAuth.UserLogin(model))
+                int userId = _userAuth.UserLogin(model);
+                if (userId > 0)
                 {
+                    model.UserId = userId;
                     string hashName = SetUserCookie(model, 6);   
                     HttpContext.Session.Add(hashName, model);
                     if (Url.IsLocalUrl(returnUrl))

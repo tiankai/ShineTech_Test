@@ -21,8 +21,6 @@ E:\WorkSpace\TaskTest_Web\DBHelper_UnitTest\bin\Debug\log4net.dll
 E:\WorkSpace\TaskTest_Web\DBHelper_UnitTest\bin\Debug\DBHelper.pdb
 E:\WorkSpace\TaskTest_Web\DBHelper_UnitTest\bin\Debug\TaskLoger.pdb
 E:\WorkSpace\TaskTest_Web\DBHelper_UnitTest\bin\Debug\nunit.framework.xml
-E:\WorkSpace\TaskTest_Web\DBHelper_UnitTest\bin\Debug\log4net.pdb
-E:\WorkSpace\TaskTest_Web\DBHelper_UnitTest\bin\Debug\log4net.xml
-E:\WorkSpace\TaskTest_Web\DBHelper_UnitTest\obj\Debug\DBHelper_UnitTest.csprojResolveAssemblyReference.cache
 E:\WorkSpace\TaskTest_Web\DBHelper_UnitTest\obj\Debug\DBHelper_UnitTest.dll
 E:\WorkSpace\TaskTest_Web\DBHelper_UnitTest\obj\Debug\DBHelper_UnitTest.pdb
+E:\WorkSpace\TaskTest_Web\DBHelper_UnitTest\obj\Debug\DBHelper_UnitTest.csprojResolveAssemblyReference.cache

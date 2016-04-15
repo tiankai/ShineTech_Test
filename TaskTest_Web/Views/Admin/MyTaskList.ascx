@@ -2,27 +2,35 @@
 
 <div ng-app="myTask" ng-controller="taskCtrl" ng-init="totoalPages=0;currentPageIndex=1;pageSize=10;isFirstPage=true;isCanNext=false;isCanPrev=true;isLastPage=false;">
   
-    <h2>Task</h2>
+    <h2>Task List</h2>
     <table  class="table table-striped">
         <thead>
             <tr>
-                <th>任务标题</th>
-                <th>优先级别</th>
-                <th>到期时间</th>
+                <th>标 题</th>
+                <th ng-click="orderFunction('Priority')">级 别</th>
+                <th>时 间</th>
+                <th>创建者</th>
                 <th>执行者</th>
-                <th>动作</th>
+                <th>进 度</th>
+                <th ng-click="orderFunction('Status')">状 态</th>
+                <th>动 作</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="t in taskList">            
-                <td><span title="{{ t.memo }}">{{ t. title }}</span></td>                
-                <td>{{ t.priority }}</td>
-                <td>{{ t.dueTime }}</td>
-                <td>{{ t.executer }}</td>
+            <tr ng-repeat="t in taskList | orderBy : orderTaskBy ">            
+                <td><span title="{{ t.memo }}">{{ t. TaskTitle | titleFormat }}</span></td>                
+                <td>{{ t.Priority }}</td>
                 <td>
-                    <select ng-change="UserDoAction(x)" ng-model="x">
-                        <option ng-repeat="item in t.doActions" ng-value="[item.doAction, t.id]">{{ item.actionMemo }}</option>
+                    {{ t.CreateTime }}
+                </td>
+                <td>Knight</td>
+                <td>{{ t.Executer | lowercase }}</td>
+                <td>{{ t.Executer | xDateFormat }}</td>
+                <td>{{ t.Status }}</td>
+                <td>
+                    <select class="selectCtrl" ng-change="UserDoAction(x)" ng-model="x">
+                        <option ng-repeat="item in t.UserActions" ng-value="[item.ActionType, t.id]">{{ item.ActionTitle }}</option>
                     </select>                    
                 </td>
                 <td>
@@ -41,7 +49,42 @@
 </div>
 <script>
     var app = angular.module('myTask', []);
+
+    app.filter('titleFormat', function () {
+
+        return function (title) {
+
+            if(title.length > 12)
+            {
+                return "for short....";
+            }
+            else
+            {
+                return title;
+            }
+        };
+    });
+
+    app.filter('xDateFormat', function () {
+
+        return function (x) {
+
+            if (x.length > 0) {
+                return x;
+            }
+            else
+            {
+                return "null";
+            }
+        };
+    });
+
     app.controller('taskCtrl', function ($scope, $http, $window) {
+
+        $scope.orderFunction = function (x) {
+
+            $scope.orderTaskBy = x;
+        };
 
         GetTaskList($scope, $http, 1);
 
@@ -72,51 +115,64 @@
             GetTaskList($scope, $http, $scope.totoalPages);
         };
     });
-
+    
     function GetTaskList(scope, http, pageIndex) {
 
-        http.get("/Task/Test?pageIndex=" + pageIndex)
+        http.get("/Task/GetTaskList?pageIndex=" + pageIndex)
 			.then(function (response) {
 
-			    scope.taskList = response.data.Tasks;
-			    scope.totoalPages = response.data.PagePart.TotoalPages;
-			    scope.currentPageIndex = response.data.PagePart.PageIndex;
-			    scope.pageSize = response.data.PagePart.PageSize;
+			    if (response.data.result == 0)
+			    {
+			        scope.taskList = response.data.TaskList;
+			        scope.totoalPages = response.data.TaskTotalPages;
+			        scope.currentPageIndex = response.data.CurrentPageIndex;
+			        scope.pageSize = response.data.TaskPageCount;
 
-			    if (scope.currentPageIndex == 1) { // 第一页
+			        if (scope.currentPageIndex == 1) { // 第一页
 
-			        scope.isLastPage = false;
-			        scope.isFirstPage = true;
-			        scope.isCanPrev = true;
-			        if (scope.totoalPages >= 2)
-			        {
-			            scope.isCanNext = false;                        
+			            scope.isLastPage = false;
+			            scope.isFirstPage = true;
+			            scope.isCanPrev = true;
+			            if (scope.totoalPages >= 2) {
+			                scope.isCanNext = false;
+			            }
+			            else {
+			                scope.isCanNext = true;
+			            }
 			        }
-			        else
-			        {
+			        else if (scope.currentPageIndex == scope.totoalPages) { // 最后一页
+
+			            scope.isLastPage = true;
+			            scope.isFirstPage = false;
 			            scope.isCanNext = true;
+			            if (scope.totoalPages >= 2) {
+			                scope.isCanPrev = false;
+			            }
+			            else {
+			                scope.isCanPrev = true;
+			            }
 			        }
-			    }
-			    else if (scope.currentPageIndex == scope.totoalPages) { // 最后一页
-
-			        scope.isLastPage = true;
-			        scope.isFirstPage = false;
-			        scope.isCanNext = true;
-			        if (scope.totoalPages >= 2) {
+			        else  // 中间页
+			        {
+			            scope.isLastPage = false;
+			            scope.isFirstPage = false;
+			            scope.isCanNext = false;
 			            scope.isCanPrev = false;
 			        }
-			        else
-			        {
-			            scope.isCanPrev = true;
-			        }
 			    }
-			    else  // 中间页
+			    else if(response.data.result == 1)
 			    {
-			        scope.isLastPage = false;
-			        scope.isFirstPage = false;
-			        scope.isCanNext = false;
-			        scope.isCanPrev = false;
+			        alert("user = null !");
 			    }
+			    else if(response.data.result == 2)
+			    {
+			        alert("error took place");
+			    }
+			    else 
+			    {
+			        alert("data = " + response.data.result);
+			    }
+			    
 			});
 
     }

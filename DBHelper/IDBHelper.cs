@@ -18,7 +18,7 @@ namespace DBHelper
         Sqlite
     }
 
-    public struct CmdSqlStruct
+    public class CmdSqlStruct
     {
         public string CmdSql { get; set; }
 
@@ -27,6 +27,11 @@ namespace DBHelper
 
     public interface IDBHelper
     {
+        /// <summary>
+        /// 获取数据库类型
+        /// </summary>
+        /// <returns></returns>
+        DB_Type GetDataBaseType();
         /// <summary>
         /// 执行sql语句，并返回受影响的行数
         /// </summary>

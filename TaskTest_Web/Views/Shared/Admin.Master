@@ -138,7 +138,7 @@
           <a class="brand" href="#">任务管理</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
-                <% Html.RenderPartial("LogOnUserControl", ViewData[keyUserName]); %>
+                Hello, <% Html.RenderPartial("LogOnUserControl", ViewData[keyUserName]); %>
             </p>
             <ul class="nav">
               <li class="active"><a href="#">Home</a></li>
@@ -157,10 +157,7 @@
         </div><!--/span-->
         <div class="span9">
           <div class="hero-unit">
-            <div>
-
-            </div>
-            <div>            
+            <div id="main-AdminRight">            
                 <asp:ContentPlaceHolder ID="MainContent" runat="server" />
             </div>
           </div>

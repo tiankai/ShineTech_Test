@@ -31,6 +31,11 @@ namespace DBHelper
             _con.Open();
         }
 
+        public DB_Type GetDataBaseType()
+        {
+            return _dbType;
+        }
+
         public int ExecuteSql(string sqlText)
         {
             int value = -1;
@@ -100,7 +105,26 @@ namespace DBHelper
 
         public T ExecuteScalar<T>(string sqlText, params IDataParameter[] parameters)
         {
-            throw new NotImplementedException();
+            T value = default(T);
+            try
+            {
+                using (var cmd = _con.CreateCommand())
+                {
+                    cmd.CommandText = sqlText;
+                    foreach(var p in parameters)
+                    {
+                        cmd.Parameters.Add(p);
+                    }
+                    var obj = cmd.ExecuteScalar();
+                    value = (T)obj;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                _loger.LogError("SimpleDBHelper.ExecuteScalar<T>(string, params IDataParameter[])", "", ex);
+            }
+
+            return value;
         }
 
         public TFuncReturn ExecuteFunction<TFuncReturn>(string functionName, params IDataParameter[] parameters)
@@ -255,14 +279,18 @@ namespace DBHelper
             {
                 using (var cmd = _con.CreateCommand())
                 {
+                    cmd.Transaction = trans;
                     foreach (var cmdSql in cmdSqls)
                     {
                         cmd.Parameters.Clear();
                         cmd.CommandText = cmdSql.CmdSql;
-                        // 
-                        foreach(var p in cmdSql.Parameters)
+                        if (cmdSql.Parameters != null)
                         {
-                            cmd.Parameters.Add(p);
+                            // 
+                            foreach (var p in cmdSql.Parameters)
+                            {
+                                cmd.Parameters.Add(p);
+                            }
                         }
                         //
                         int result = cmd.ExecuteNonQuery();

@@ -25,10 +25,10 @@ namespace TaskTest_Web.Models
             switch(type)
             {
                 case ParamType.TableStr:
-                    paramStr = GetXmlValue("/Config/TableStr");
+                    paramStr = "K"; // GetXmlValue("/Config/TableStr");
                     break;
                 case ParamType.SqlConStr:
-                    paramStr = GetXmlValue("");
+                    paramStr = "Data Source=.;Initial Catalog=ShineTech_Test;User ID=sa;Password=sa"; // GetXmlValue("");
                     break;
             }
 

@@ -17,7 +17,7 @@ namespace TaskTest_Web.Models
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        bool UserLogin(LogOnModel model);
+        int UserLogin(LogOnModel model);
         /// <summary>
         /// 注册用户
         /// </summary>
@@ -50,9 +50,9 @@ namespace TaskTest_Web.Models
             return _userAuth;
         }
 
-        public bool UserLogin(LogOnModel model)
+        public int UserLogin(LogOnModel model)
         {
-            return true;
+            return 1;
         }
 
         public bool RegisterUser(RegisterModel model)
@@ -102,6 +102,7 @@ namespace TaskTest_Web.Models
 
     public class LogOnModel
     {
+        public int UserId { get; set; }
         [Required]
         [Display(Name = "User name")]
         public string UserName { get; set; }

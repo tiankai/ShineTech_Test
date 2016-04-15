@@ -8,5 +8,6 @@ F:\WorkSpace\TaskTest_Web\TaskLoger\obj\Debug\TaskLoger.pdb
 F:\WorkSpace\TaskTest_Web\TaskLoger\obj\Debug\TaskLoger.csprojResolveAssemblyReference.cache
 E:\WorkSpace\TaskTest_Web\TaskLoger\bin\Debug\TaskLoger.dll
 E:\WorkSpace\TaskTest_Web\TaskLoger\bin\Debug\TaskLoger.pdb
+E:\WorkSpace\TaskTest_Web\TaskLoger\obj\Debug\TaskLoger.csprojResolveAssemblyReference.cache
 E:\WorkSpace\TaskTest_Web\TaskLoger\obj\Debug\TaskLoger.dll
 E:\WorkSpace\TaskTest_Web\TaskLoger\obj\Debug\TaskLoger.pdb

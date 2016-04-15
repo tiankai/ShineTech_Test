@@ -14,9 +14,6 @@ F:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\log4net.xml
 F:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\obj\Debug\TaskLogic_UnitTest.csprojResolveAssemblyReference.cache
 F:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\obj\Debug\TaskLogic_UnitTest.dll
 F:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\obj\Debug\TaskLogic_UnitTest.pdb
-E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\obj\Debug\TaskLogic_UnitTest.csprojResolveAssemblyReference.cache
-E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\obj\Debug\TaskLogic_UnitTest.dll
-E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\obj\Debug\TaskLogic_UnitTest.pdb
 E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\TaskLogic_UnitTest.dll
 E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\TaskLogic_UnitTest.pdb
 E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\DBHelper.dll
@@ -28,3 +25,6 @@ E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\DBHelper.pdb
 E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\TaskLoger.pdb
 E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\TaskLogic.pdb
 E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\nunit.framework.xml
+E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\obj\Debug\TaskLogic_UnitTest.csprojResolveAssemblyReference.cache
+E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\obj\Debug\TaskLogic_UnitTest.dll
+E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\obj\Debug\TaskLogic_UnitTest.pdb

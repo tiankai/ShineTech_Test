@@ -48,7 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DBHelper\DBHelper.csproj">
-      <Project>{AF38F860-860B-4E0B-8F75-4B6F712FA98F}</Project>
+      <Project>{af38f860-860b-4e0b-8f75-4b6f712fa98f}</Project>
       <Name>DBHelper</Name>
     </ProjectReference>
     <ProjectReference Include="..\TaskLoger\TaskLoger.csproj">

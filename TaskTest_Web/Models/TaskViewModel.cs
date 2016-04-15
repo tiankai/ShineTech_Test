@@ -65,35 +65,11 @@ namespace TaskTest_Web.Models
         Done = 4
     }
 
-    /// <summary>
-    /// 执行动作
-    /// </summary>
-    public enum WorkAction : uint
+    public class UserBehaivour
     {
-        /// <summary>
-        /// 新建任务
-        /// </summary>
-        CreateNewTask = 0,
-        /// <summary>
-        /// 分配任务
-        /// </summary>
-        AssignTask = 1,
-        /// <summary>
-        /// 接受任务
-        /// </summary>
-        AcceptTask = 2,
-        /// <summary>
-        /// 拒绝任务
-        /// </summary>
-        DenyTask = 3,
-        /// <summary>
-        /// 完结任务
-        /// </summary>
-        WorkDone = 4, 
-        /// <summary>
-        /// 编辑任务
-        /// </summary>
-        EditTask = 5
+        public uint ActionType { get; set; }
+
+        public string ActionTitle { get; set; }
     }
 
     /// <summary>
@@ -102,30 +78,34 @@ namespace TaskTest_Web.Models
     public class NewTaskModel
     {
         [Required]
-        [Display(Name = "TaskTitle")]
+        [Display(Name = "Task Title")]
+        [StringLength(40)]
         /// <summary>
         /// 任务标题
         /// </summary>
         public string TaskTitle { get; set; }
 
-        [Display(Name = "TaskDescription")]
+        [Display(Name = "Task Description")]
+        [StringLength(512)]
         /// <summary>
         /// 任务描述
         /// </summary>
         public string TaskDescription { get; set; }
 
         [Required]
-        [Display(Name = "TaskPriority")]
+        [EnumDataType(typeof(TaskTest_Web.Models.TaskPriority))]
+        [Display(Name = "Task Priority")]
         /// <summary>
         /// 优先级
         /// </summary>
-        public TaskPriority Priority { get; set; }
-
-        [Required]
-        [Display(Name = "TaskDueTime")]
+        public TaskPriority Priority { get; set; }        
         /// <summary>
         /// 到期时间
         /// </summary>
+        [Required]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ConvertEmptyStringToNull = true, NullDisplayText = "", ApplyFormatInEditMode = true)]
+        [Display(Name = "Task DueTime")]
         public DateTime DueTime { get; set; }
         /// <summary>
         /// 是否是顶级任务, 任务树的根节点
@@ -148,27 +128,30 @@ namespace TaskTest_Web.Models
         public int TaskId { get; set; }
 
         [Required]
-        [Display(Name = "TaskTitle")]
+        [Display(Name = "Task Title")]
         /// <summary>
         /// 任务标题
         /// </summary>
         public string TaskTitle { get; set; }
 
-        [Display(Name = "TaskDescription")]
+        [Display(Name = "Task Description")]
         /// <summary>
         /// 任务描述
         /// </summary>
         public string TaskDescription { get; set; }
 
         [Required]
-        [Display(Name = "TaskPriority")]
+        [EnumDataType(typeof(TaskTest_Web.Models.TaskPriority))]
+        [Display(Name = "Task Priority")]
         /// <summary>
         /// 优先级
         /// </summary>
         public TaskPriority Priority { get; set; }
 
         [Required]
-        [Display(Name = "TaskDueTime")]
+        [Display(Name = "Task DueTime")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         /// <summary>
         /// 到期时间
         /// </summary>
@@ -192,11 +175,11 @@ namespace TaskTest_Web.Models
         /// <summary>
         /// 优先级
         /// </summary>
-        public TaskPriority Priority { get; set; }
+        public int Priority { get; set; }
         /// <summary>
         /// 到期时间
         /// </summary>
-        public DateTime DueTime { get; set; }
+        public long DueTime { get; set; }
         /// <summary>
         /// 创建时间
         /// </summary>
@@ -204,15 +187,15 @@ namespace TaskTest_Web.Models
         /// <summary>
         /// 任务分配时间
         /// </summary>
-        public DateTime AssignTime { get; set; }
+        public DateTime? AssignTime { get; set; }
         /// <summary>
         /// 受理时间
         /// </summary>
-        public DateTime AcceptTime { get; set; }
+        public DateTime? AcceptTime { get; set; }
         /// <summary>
         /// 完结时间
         /// </summary>
-        public DateTime DoneTime { get; set; }
+        public DateTime? DoneTime { get; set; }
         /// <summary>
         /// 创建者
         /// </summary>
@@ -228,7 +211,11 @@ namespace TaskTest_Web.Models
         /// <summary>
         /// 任务的状态
         /// </summary>
-        public TaskStatus Status { get; set; }
+        public int Status { get; set; }
+        /// <summary>
+        /// 用户动作
+        /// </summary>
+        public IEnumerable<UserBehaivour> UserActions { get; set; }
     }
 
 
@@ -253,11 +240,15 @@ namespace TaskTest_Web.Models
 
     public class TaskListViewModel
     {
+        /// <summary>
+        /// 结果
+        /// </summary>
+        public int result { get; set; }
         public IEnumerable<EachTaskModel> TaskList { get; set; }
         /// <summary>
         /// 任务数量
         /// </summary>
-        public int TaskCounts { get; set; }
+        public int CurrentPageIndex { get; set; }
         /// <summary>
         /// 每页显示数量
         /// </summary>

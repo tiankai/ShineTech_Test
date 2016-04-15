@@ -13,7 +13,10 @@ namespace TaskTest_Web.Controllers
 
         protected override void Initialize(RequestContext requestContext)
         {
-            //_iTaskLogic = new TaskLogic.SimpleTaskLogic("K", "");
+            string tableStr = Models.Utility.GetParamStr(Models.ParamType.TableStr);
+            string conStr = Models.Utility.GetParamStr(Models.ParamType.SqlConStr);
+            // 
+            _iTaskLogic = new TaskLogic.SimpleTaskLogic(tableStr, conStr);
 
             base.Initialize(requestContext);
         }
@@ -68,13 +71,22 @@ namespace TaskTest_Web.Controllers
         /// <returns></returns>
         public ActionResult NewTask(int? id)
         {
+            const int DueDays = 30;
             int taskId = id.HasValue == true ? (int)id : 0;
             // 
             var viewModel = new TaskTest_Web.Models.NewTaskModel();
+            viewModel.DueTime = DateTime.Now.AddDays(DueDays);
             viewModel.ParentTaskId = taskId;
+            viewModel.IsTopTask = taskId == 0 ? true : false;
 
             return View((object)viewModel);
         }
+
+        private Int32 GetUserId(string userName)
+        {
+            return 1;
+        }
+
         /// <summary>
         /// 新建任务
         /// </summary>
@@ -92,7 +104,18 @@ namespace TaskTest_Web.Controllers
             }
             else
             {
-                var mission = new TaskLogic.Mission() { TaskId = 0, TaskTitle = model.TaskTitle, Priority = (int)model.Priority, DueTime = model.DueTime, ParentTaskId = model.ParentTaskId, Creater = currentUser.UserName, CreateTime = DateTime.Now };
+                int userId = GetUserId(currentUser.UserName);
+                var mission = new TaskLogic.NewMission()
+                {
+                    TaskId = 0,
+                    TaskTitle = model.TaskTitle,
+                    TaskMemo = model.TaskDescription,
+                    TaskStatus = 0,
+                    Priority = (int)model.Priority,
+                    DueTime = model.DueTime,
+                    ParentTaskId = model.ParentTaskId,
+                    Creater = userId
+                };
 
                 bool flag = _iTaskLogic.CreateMission(mission);
 
@@ -106,24 +129,51 @@ namespace TaskTest_Web.Controllers
         /// <returns></returns>
         public ActionResult EditTask(int id)
         {
-            var viewModel = new TaskTest_Web.Models.EditTaskModel();
-            viewModel.TaskId = id;
-            viewModel.TaskTitle = "Stars Plan";
-            viewModel.TaskDescription = "to save all of the people";
-            viewModel.DueTime = DateTime.Now;
-            viewModel.Priority = Models.TaskPriority.Senior;
+            var model = _iTaskLogic.GetEditMission(id);
 
-            return View((object)viewModel);
+            if(string.IsNullOrEmpty(model.TaskTitle) == true) // 任务信息不存在
+            {
+                return RedirectToAction("Index");
+            }
+            else // 任务信息存在
+            {
+                var viewModel = new TaskTest_Web.Models.EditTaskModel();
+                viewModel.TaskId = id;
+                viewModel.TaskTitle = model.TaskTitle;
+                viewModel.TaskDescription = model.TaskMemo;
+                viewModel.DueTime = model.DueTime;
+                viewModel.Priority = (Models.TaskPriority)model.Priority;
+
+                return View((object)viewModel);
+            }
         }
-        [HttpPost]
+        
         /// <summary>
         /// 将任务信息更新
         /// </summary>
         /// <param name="model">新的任务信息</param>
         /// <returns></returns>
+        [HttpPost]
         public ActionResult EditTask(TaskTest_Web.Models.EditTaskModel model)
         {
-            return RedirectToAction("Index");
+            // 模型转换
+            var editModel = new TaskLogic.EditMission(model.TaskId);
+            editModel.TaskTitle = model.TaskTitle;
+            editModel.TaskMemo = model.TaskDescription;
+            editModel.Priority = (int)model.Priority;
+            editModel.DueTime = model.DueTime;
+            // 更新任务信息
+            bool flag = _iTaskLogic.EditMissionProperty(editModel);
+            if(flag == true)
+            {
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                ModelState.AddModelError("", "更新任务信息失败!");
+                return View((object)model);
+            }
         }
 
         private TaskTest_Web.Models.EachTaskModel GetNodeModel(int taskId, string taskTitle, TaskTest_Web.Models.TaskPriority taskPriority, DateTime dt, int parentTaskId)
@@ -133,14 +183,14 @@ namespace TaskTest_Web.Controllers
                 TaskId = taskId,
                 TaskTitle = taskTitle,
                 Executer = "Wesley Gibson",
-                Priority = taskPriority,
+                Priority = (int)taskPriority,
                 Creater = "Asmon Kobe",
                 CreateTime = dt,
                 AcceptTime = dt.AddHours(3),
                 AssignTime = dt.AddMinutes(30),
-                DueTime = dt.AddDays(60),
+                DueTime = dt.AddDays(60).Ticks,
                 ParentTaskId = parentTaskId,
-                Status = Models.TaskStatus.Assigned
+                Status = (int)Models.TaskStatus.Assigned
             };
 
             return model;
