@@ -15,15 +15,24 @@ namespace TaskTest_Web.Controllers
         {
             string tableStr = Models.Utility.GetParamStr(Models.ParamType.TableStr);
             string conStr = Models.Utility.GetParamStr(Models.ParamType.SqlConStr);
+            int mode = Convert.ToInt32(Models.Utility.GetParamStr(Models.ParamType.ProgramMode));
             // 
-            _iTaskLogic = new TaskLogic.SimpleTaskLogic(tableStr, conStr);
-
+            if(mode == 1) // Entity Framework Mode
+            {
+                var user = GetUser(requestContext.HttpContext, Models.Utility.GetParamStr(Models.ParamType.CookieName));
+                _iTaskLogic = new TaskLogic.EF_TaskLogic(user.UserId, conStr, tableStr);
+            }
+            else if(mode == 0) // ADO.NET-DAL Mode
+            {
+                _iTaskLogic = new TaskLogic.SimpleTaskLogic(tableStr, conStr);
+            }
+            //
             base.Initialize(requestContext);
         }
 
-        private string GetUserKeyName(string keyName)
+        private string GetUserKeyName(HttpContextBase httpContext, string keyName)
         {
-            var cookie = this.Request.Cookies[keyName];
+            var cookie = httpContext.Request.Cookies[keyName];
             if (cookie != null && !string.IsNullOrEmpty(cookie.Value))
             {
                 return cookie.Value;
@@ -81,10 +90,21 @@ namespace TaskTest_Web.Controllers
 
             return View((object)viewModel);
         }
-
-        private Int32 GetUserId(string userName)
+        
+        private Models.LogOnModel GetUser(HttpContextBase httpContext, string keyName)
         {
-            return 1;
+            string userKey = GetUserKeyName(httpContext, keyName);
+            if(string.IsNullOrEmpty(userKey) == false)
+            {
+                var currentUser = httpContext.Session[userKey] as Models.LogOnModel;
+                if(currentUser == null)
+                {
+                    return new Models.LogOnModel() { UserId = -1 };
+                }
+                return currentUser;
+            }
+
+            return new Models.LogOnModel() { UserId = -1 };
         }
 
         /// <summary>
@@ -93,18 +113,15 @@ namespace TaskTest_Web.Controllers
         /// <param name="model">任务信息</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult NewTask(TaskTest_Web.Models.NewTaskModel model)
+        public ActionResult NewTask(Models.NewTaskModel model)
         {
-            string userKey = GetUserKeyName("UName");
-            var currentUser = this.Session[userKey] as TaskTest_Web.Models.LogOnModel;
-
-            if(currentUser == null)
+            var currentUser = GetUser(this.HttpContext, Models.Utility.GetParamStr(Models.ParamType.CookieName));
+            if (currentUser.UserId == -1)
             {
                 return RedirectToAction("Logon", "Account");
             }
             else
             {
-                int userId = GetUserId(currentUser.UserName);
                 var mission = new TaskLogic.NewMission()
                 {
                     TaskId = 0,
@@ -114,12 +131,20 @@ namespace TaskTest_Web.Controllers
                     Priority = (int)model.Priority,
                     DueTime = model.DueTime,
                     ParentTaskId = model.ParentTaskId,
-                    Creater = userId
+                    Creater = currentUser.UserId
                 };
 
-                bool flag = _iTaskLogic.CreateMission(mission);
+                var res = _iTaskLogic.CreateMission(mission);
 
-                return RedirectToAction("Index");
+                if (res.result == 0)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError("", string.Format("创建任务失败, errCode = {0}, 失败原因: {1}", res.result, res.message));
+                    return View(model);
+                }
             }
         }
         /// <summary>
@@ -130,22 +155,29 @@ namespace TaskTest_Web.Controllers
         public ActionResult EditTask(int id)
         {
             var model = _iTaskLogic.GetEditMission(id);
-
-            if(string.IsNullOrEmpty(model.TaskTitle) == true) // 任务信息不存在
+            var viewModel = new TaskTest_Web.Models.EditTaskModel();
+            viewModel.TaskId = model.TaskId;
+            viewModel.TaskTitle = model.TaskTitle;
+            viewModel.TaskDescription = model.TaskMemo;
+            viewModel.DueTime = model.DueTime;
+            if(model.TaskId == -1) // 任务信息不存在
             {
-                return RedirectToAction("Index");
+                ModelState.AddModelError("", string.Format("任务[{0}]信息不存在", id));
+            }
+            else if(model.TaskId == -2) // 无权编辑任务
+            {
+                ModelState.AddModelError("", string.Format("无权编辑任务[{0}]", id));
+            }
+            else if(model.TaskId == -3)
+            {
+                ModelState.AddModelError("", string.Format("任务[{0}]状态已经改变了，不能进行修改", id));
             }
             else // 任务信息存在
-            {
-                var viewModel = new TaskTest_Web.Models.EditTaskModel();
-                viewModel.TaskId = id;
-                viewModel.TaskTitle = model.TaskTitle;
-                viewModel.TaskDescription = model.TaskMemo;
-                viewModel.DueTime = model.DueTime;
-                viewModel.Priority = (Models.TaskPriority)model.Priority;
-
-                return View((object)viewModel);
+            {                
+                viewModel.Priority = (Models.TaskPriority)model.Priority;               
             }
+
+            return View((object)viewModel);
         }
         
         /// <summary>
@@ -156,27 +188,34 @@ namespace TaskTest_Web.Controllers
         [HttpPost]
         public ActionResult EditTask(TaskTest_Web.Models.EditTaskModel model)
         {
-            // 模型转换
-            var editModel = new TaskLogic.EditMission(model.TaskId);
-            editModel.TaskTitle = model.TaskTitle;
-            editModel.TaskMemo = model.TaskDescription;
-            editModel.Priority = (int)model.Priority;
-            editModel.DueTime = model.DueTime;
-            // 更新任务信息
-            bool flag = _iTaskLogic.EditMissionProperty(editModel);
-            if(flag == true)
+            var currentUser = GetUser(this.HttpContext, Models.Utility.GetParamStr(Models.ParamType.CookieName));
+            if (currentUser.UserId == -1)
             {
-
-                return RedirectToAction("Index");
+                return RedirectToAction("Logon", "Account");
             }
             else
             {
-                ModelState.AddModelError("", "更新任务信息失败!");
-                return View((object)model);
+                // 模型转换
+                var editModel = new TaskLogic.EditMission(model.TaskId);
+                editModel.TaskTitle = model.TaskTitle;
+                editModel.TaskMemo = model.TaskDescription;
+                editModel.Priority = (int)model.Priority;
+                editModel.DueTime = model.DueTime;
+                // 更新任务信息
+                var res = _iTaskLogic.EditMissionProperty(editModel);
+                if (res.result == 0)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError("", string.Format("更新任务信息失败, errCode = {1}, 失败原因:{0}", res.message, res.result));
+                    return View((object)model);
+                }
             }
         }
 
-        private TaskTest_Web.Models.EachTaskModel GetNodeModel(int taskId, string taskTitle, TaskTest_Web.Models.TaskPriority taskPriority, DateTime dt, int parentTaskId)
+        private Models.EachTaskModel GetNodeModel(int taskId, string taskTitle, Models.TaskPriority taskPriority, DateTime dt, int parentTaskId)
         {
             var model = new TaskTest_Web.Models.EachTaskModel()
             {
@@ -211,6 +250,15 @@ namespace TaskTest_Web.Controllers
             }
 
             return rootNode;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if(_iTaskLogic != null)
+            {
+                _iTaskLogic.Release();
+            }
+            base.Dispose(disposing);
         }
     }
 }

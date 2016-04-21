@@ -12,8 +12,6 @@ namespace TaskTest_Web.Controllers
 
     public class AccountController : Controller
     {
-        private const string CookieName = "UName";
-
         private IUserAuth _userAuth;
 
         protected override void Initialize(RequestContext requestContext)
@@ -41,7 +39,7 @@ namespace TaskTest_Web.Controllers
         {
             string hashName = CalcHash(string.Concat(model.UserName, model.Password));
             // 
-            var cookie = new HttpCookie(CookieName, hashName);
+            var cookie = new HttpCookie(Models.Utility.GetParamStr(ParamType.CookieName), hashName);
             cookie.Expires = DateTime.Now.AddHours(expiredHour);
             HttpContext.Response.SetCookie(cookie);
 
@@ -112,7 +110,7 @@ namespace TaskTest_Web.Controllers
         public ActionResult LogOff()
         {
             var userCookies = HttpContext.Request.Cookies;
-            var userCookie = userCookies.Get(CookieName);
+            var userCookie = userCookies.Get(Models.Utility.GetParamStr(ParamType.CookieName));
             // 
             if(userCookie != null)
             {

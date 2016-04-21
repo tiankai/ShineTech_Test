@@ -21,10 +21,12 @@ E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\nunit.framework.dll
 E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\TaskLoger.dll
 E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\TaskLogic.dll
 E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\log4net.dll
+E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\EntityFramework.dll
 E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\DBHelper.pdb
 E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\TaskLoger.pdb
 E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\TaskLogic.pdb
 E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\nunit.framework.xml
+E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\bin\Debug\EntityFramework.xml
 E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\obj\Debug\TaskLogic_UnitTest.csprojResolveAssemblyReference.cache
 E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\obj\Debug\TaskLogic_UnitTest.dll
 E:\WorkSpace\TaskTest_Web\TaskLogic_UnitTest\obj\Debug\TaskLogic_UnitTest.pdb

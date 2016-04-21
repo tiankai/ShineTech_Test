@@ -15,9 +15,34 @@ namespace TaskTest_Web.Controllers
             string tableStr = Models.Utility.GetParamStr(Models.ParamType.TableStr);
             string conStr = Models.Utility.GetParamStr(Models.ParamType.SqlConStr);
             // 
-            _iTaskLogic = new TaskLogic.SimpleTaskLogic(tableStr, conStr);
-
+            int runMode = Convert.ToInt32(Models.Utility.GetParamStr(Models.ParamType.ProgramMode));
+            if (runMode == 0)
+            {
+                _iTaskLogic = new TaskLogic.SimpleTaskLogic(tableStr, conStr);
+            }
+            else if(runMode == 1)
+            {
+                var user = GetUser(Models.Utility.GetParamStr(Models.ParamType.CookieName));
+                _iTaskLogic = new TaskLogic.EF_TaskLogic(user.UserId, conStr, tableStr);
+            }
+            //
             base.Initialize(requestContext);
+        }
+        
+        private Models.LogOnModel GetUser(string keyName)
+        {
+            string userKey = GetUserKeyName(keyName);
+            if (string.IsNullOrEmpty(userKey) == false)
+            {
+                var currentUser = this.Session[userKey] as Models.LogOnModel;
+                if (currentUser == null)
+                {
+                    return new Models.LogOnModel() { UserId = -1 };
+                }
+                return currentUser;
+            }
+
+            return new Models.LogOnModel() { UserId = -1 };
         }
 
         private string GetUserKeyName(string keyName)
@@ -57,10 +82,9 @@ namespace TaskTest_Web.Controllers
             int index = pageIndex.HasValue == true ? (int)pageIndex : 1;
             int size = pageSize.HasValue == true ? (int)pageSize : 10;
             // 
-            string userKey = GetUserKeyName("UName");
-            var currentUser = this.Session[userKey] as TaskTest_Web.Models.LogOnModel;
+            var currentUser = GetUser(Models.Utility.GetParamStr(Models.ParamType.CookieName));
 
-            if (currentUser == null)
+            if (currentUser.UserId == -1)
             {
                 return "";
             }
@@ -109,11 +133,11 @@ namespace TaskTest_Web.Controllers
                         {
                             AcceptTime = r.AcceptTime,
                             AssignTime = r.AssignTime,
-                            Creater = r.Creater,
+                            Creater = r.Creater.UserName,
                             CreateTime = r.CreateTime,
                             DoneTime = r.DoneTime,
                             DueTime = (long)(r.DueTime.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds),
-                            Executer = r.Executer,
+                            Executer = r.Executer.UserName,
                             ParentTaskId = r.ParentTaskId,
                             Priority = (int)r.Priority,
                             Status = (int)r.TaskStatus,
@@ -147,48 +171,78 @@ namespace TaskTest_Web.Controllers
             return LitJson.JsonMapper.ToJson(viewModel);
         }
 
-        public string AssignTask(int id, int userId)
+        private string GetUserNotLoginString(int errCode)
         {
-            var result = _iTaskLogic.AssignMission(id, userId);
-            // 
             var sbText = new System.Text.StringBuilder("{ \"result\" : ");
-            sbText.Append(result.result).Append(", \"message\" : \"")
-                .Append(result.message).Append("\" }");
+            sbText.Append(errCode).Append(", \"message\" : \"")
+                .Append("user not login").Append("\" }");
 
             return sbText.ToString();
+        }
+
+        public string AssignTask(int id, int userId)
+        {
+            var user = GetUser(Models.Utility.GetParamStr(Models.ParamType.CookieName));
+            if (user.UserId == -1)
+            {
+                return GetUserNotLoginString(-1);
+            }
+            else
+            {
+                var result = _iTaskLogic.AssignMission(id, userId);
+                return LitJson.JsonMapper.ToJson(result);
+            }
         }
 
         public string AcceptTask(int id)
         {
-            var result = _iTaskLogic.AcceptMission(id);
-            // 
-            var sbText = new System.Text.StringBuilder("{ \"result\" : ");
-            sbText.Append(result.result).Append(", \"message\" : \"")
-                .Append(result.message).Append("\" }");
-
-            return sbText.ToString();
+            var user = GetUser(Models.Utility.GetParamStr(Models.ParamType.CookieName));
+            if (user.UserId == -1)
+            {
+                return GetUserNotLoginString(-1);
+            }
+            else
+            {
+                var result = _iTaskLogic.AcceptMission(id);
+                return LitJson.JsonMapper.ToJson(result);
+            }
         }
 
         public string RejectTask(int id)
         {
-            var result = _iTaskLogic.RejectMission(id);
-            // 
-            var sbText = new System.Text.StringBuilder("{ \"result\" : ");
-            sbText.Append(result.result).Append(", \"message\" : \"")
-                .Append(result.message).Append("\" }");
-
-            return sbText.ToString();
+            var user = GetUser(Models.Utility.GetParamStr(Models.ParamType.CookieName));
+            if (user.UserId == -1)
+            {
+                return GetUserNotLoginString(-1);
+            }
+            else
+            {
+                var result = _iTaskLogic.RejectMission(id);
+                return LitJson.JsonMapper.ToJson(result);
+            }
         }
 
         public string TaskDone(int id)
         {
-            var result = _iTaskLogic.MissionDone(id);
-            // 
-            var sbText = new System.Text.StringBuilder("{ \"result\" : ");
-            sbText.Append(result.result).Append(", \"message\" : \"")
-                .Append(result.message).Append("\" }");
+            var user = GetUser(Models.Utility.GetParamStr(Models.ParamType.CookieName));
+            if (user.UserId == -1)
+            {
+                return GetUserNotLoginString(-1);
+            }
+            else
+            {
+                var result = _iTaskLogic.MissionDone(id);
+                return LitJson.JsonMapper.ToJson(result);
+            }
+        }
 
-            return sbText.ToString();
+        protected override void Dispose(bool disposing)
+        {
+            if(_iTaskLogic != null)
+            {
+                _iTaskLogic.Release();
+            }
+            base.Dispose(disposing);
         }
     }
 }

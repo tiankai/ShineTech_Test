@@ -52,7 +52,7 @@ namespace TaskTest_Web.Models
 
         public int UserLogin(LogOnModel model)
         {
-            return 1;
+            return 3;
         }
 
         public bool RegisterUser(RegisterModel model)
@@ -67,7 +67,6 @@ namespace TaskTest_Web.Models
             
             return model;
         }
-        
     }
 
     public class ChangePasswordModel

@@ -52,14 +52,14 @@ namespace TaskLogic
         /// 备注信息
         /// </summary>
         public string Memo { get; set; }
-        /// <summary>
-        /// 电子邮件地址
-        /// </summary>
-        public string Email { get; set; }
-        /// <summary>
-        /// 角色
-        /// </summary>
-        public UserRole Actor { get; set; }
+
+        public int Status { get; set; }
+
+        public string LastLoginTime { get; set; }
+
+        public string LastLoginIp { get; set; }
+
+        public bool IsWorking { get; set; }
     }
 
     public interface IUser
@@ -90,6 +90,12 @@ namespace TaskLogic
         /// <param name="newPass">新密码</param>
         /// <returns></returns>
         bool ModifyUserPass(string userName, string oldPass, string newPass);
+        /// <summary>
+        /// 删除用户
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        bool RemoveUser(string userName);
 
     }
 }

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="Task" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+  <EntityContainer Name="TaskContainer" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="TaskEntities" EntityType="Task.TaskEntity" />
+    <EntitySet Name="UserEntities" EntityType="Task.UserEntity" />
+    <EntitySet Name="TaskFlowEntities" EntityType="Task.TaskFlowEntity" />
+  </EntityContainer>
+  <EntityType Name="TaskEntity">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TaskTitle" Type="String" Nullable="false" MaxLength="40" />
+    <Property Name="TaskDescription" Type="String" Nullable="true" MaxLength="512" />
+    <Property Name="Priority" Type="Int32" Nullable="false" />
+    <Property Name="DueTime" Type="DateTime" Nullable="false" />
+    <Property Name="CreateTime" Type="DateTime" Nullable="false" />
+    <Property Name="AssignTime" Type="DateTime" Nullable="true" />
+    <Property Name="AcceptTime" Type="DateTime" Nullable="true" />
+    <Property Name="DoneTime" Type="DateTime" Nullable="true" />
+    <Property Name="TaskStatus" Type="Int32" Nullable="false" />
+    <Property Name="Creater" Type="Int32" Nullable="false" />
+    <Property Name="Executer" Type="Int32" Nullable="true" />
+    <Property Name="ParentTaskId" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="UserEntity">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" />
+    <Property Name="Pass" Type="String" Nullable="false" />
+    <Property Name="Memo" Type="String" Nullable="true" />
+  </EntityType>
+  <EntityType Name="TaskFlowEntity">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TaskId" Type="Int32" Nullable="false" />
+    <Property Name="OperType" Type="Int32" Nullable="false" />
+    <Property Name="WorkMemo" Type="String" MaxLength="512" />
+    <Property Name="WorkTime" Type="DateTime" Nullable="false" />
+    <Property Name="UId" Type="Int32" Nullable="false" />
+  </EntityType>
+</Schema>

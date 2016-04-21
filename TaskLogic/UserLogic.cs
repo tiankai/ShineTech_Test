@@ -47,11 +47,10 @@ namespace TaskLogic
                 {
                     userId = dr.GetInt32(0);
                     dbPass = dr.GetString(1);
-                    actor =  Convert.ToUInt32(dr[2]);
                 }
             }
 
-            return new UserInfo() { UserId = userId, UserName = userName, Actor = (UserRole)actor };            
+            return new UserInfo() { UserId = userId, UserName = userName };            
         }
 
         public void UserLogout(string userName)
@@ -67,6 +66,95 @@ namespace TaskLogic
         public bool ModifyUserPass(string userName, string oldPass, string newPass)
         {
             throw new NotImplementedException();
+        }
+
+        public bool RemoveUser(string userName)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class EF_UserLogic : IUser, IDisposable
+    {
+        private readonly TaskContainer _taskContext;
+
+        public EF_UserLogic(string sqlConStr, string tableStr)
+        {
+            var conSql = new SqlConnection(sqlConStr);
+            conSql.Open();
+            //
+            _taskContext = new TaskContainer(conSql, tableStr);
+        }
+
+        public UserInfo UserLogin(string userName, string userPass)
+        {
+            var model = new UserInfo() { UserId = -1, UserName = userName, UserPass = string.Empty };
+
+            var user = _taskContext.AllUsers.Where(u => u.UserName == userName).FirstOrDefault();
+            if (user != null)
+            {
+                model.UserId = user.UserId;
+                //
+                user.LastLoginTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                _taskContext.SaveChanges();
+            }
+
+            return model;
+        }
+
+        public void UserLogout(string userName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool RegisterUser(UserInfo user)
+        {
+            bool flag = false;
+            int UID = _taskContext.AllUsers.Max(s => s.UserId) + 1;
+            // user.Memo 数据库中有长度限制 若是超长了 报错 "string or binary data would be truncated"
+            var u = new UserInfo() { UserId = UID, UserPass = user.UserPass, UserName = user.UserName, IsWorking = false, LastLoginIp = "125.0.2.3", LastLoginTime = DateTime.Now.ToShortDateString(), Status = 0, Memo = user.Memo };
+            _taskContext.AllUsers.Add(u);
+            _taskContext.SaveChanges();
+            flag = true;
+
+            return flag;
+        }
+
+        public bool ModifyUserPass(string userName, string oldPass, string newPass)
+        {
+            bool flag = false;
+            var user = _taskContext.AllUsers.Where(s => s.UserName == userName).FirstOrDefault();
+            if (user != null)
+            {
+                user.UserPass = newPass;
+                user.LastLoginTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            }
+            _taskContext.SaveChanges();
+            flag = true;
+
+            return flag;
+        }
+
+        public bool RemoveUser(string userName)
+        {
+            bool flag = false;
+            var user = _taskContext.AllUsers.Where(s => s.UserName == userName).FirstOrDefault();
+            if (user != null)
+            {
+                _taskContext.AllUsers.Remove(user);
+            }
+            _taskContext.SaveChanges();
+            flag = true;
+
+            return flag;
+        }
+
+        public void Dispose()
+        {
+            if(_taskContext != null)
+            {
+                _taskContext.Dispose();
+            }
         }
     }
 }

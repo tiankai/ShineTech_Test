@@ -146,23 +146,23 @@ namespace TaskLogic
         /// <summary>
         /// 任务分配时间
         /// </summary>
-        public DateTime? AssignTime { get; set; }
+        public Nullable<DateTime> AssignTime { get; set; }
         /// <summary>
         /// 受理时间
         /// </summary>
-        public DateTime? AcceptTime { get; set; }
+        public Nullable<DateTime> AcceptTime { get; set; }
         /// <summary>
         /// 完结时间
         /// </summary>
-        public DateTime? DoneTime { get; set; }
+        public Nullable<DateTime> DoneTime { get; set; }
         /// <summary>
         /// 创建者
         /// </summary>
-        public string Creater { get; set; }
+        public int CreaterId { get; set; }
         /// <summary>
         /// 执行者
         /// </summary>
-        public string Executer { get; set; }
+        public Nullable<int> ExecuterId { get; set; }
         /// <summary>
         /// 上一级任务编号
         /// </summary>
@@ -170,13 +170,42 @@ namespace TaskLogic
         /// <summary>
         /// 任务状态
         /// </summary>
-        public int TaskStatus { get; set; }
+        public byte TaskStatus { get; set; }
         /// <summary>
         /// 用户行为动作
         /// </summary>
         public IEnumerable<UserActionType> UserActions { get; set; }
+
+        public virtual UserInfo Creater { get; set; }
+
+        public virtual UserInfo Executer { get; set; }
+
+        public virtual Mission ParentTask { get; set; }
     }
 
+    public class TaskFlow
+    {
+        public Int64 FlowId { get; set; }
+
+        public int TaskId { get; set; }
+
+        public byte OperType { get; set; }
+
+        public string WorkMemo { get; set; }
+
+        public DateTime HappendTime { get; set; }
+
+        public int OperatorId { get; set; }
+
+        /// <summary>
+        /// 关联任务信息
+        /// </summary>
+        public virtual Mission TaskInfo { get; set; }
+        /// <summary>
+        /// 操作者
+        /// </summary>
+        public virtual UserInfo Operator { get; set; }
+    }
     /// <summary>
     /// 任务业务逻辑
     /// </summary>
@@ -193,13 +222,13 @@ namespace TaskLogic
         /// </summary>
         /// <param name="task"></param>
         /// <returns></returns>
-        bool CreateMission(NewMission task);
+        UnifiedTaskJson CreateMission(NewMission task);
         /// <summary>
         /// 编辑任务属性
         /// </summary>
         /// <param name="task"></param>
         /// <returns></returns>
-        bool EditMissionProperty(EditMission task);
+        UnifiedTaskJson EditMissionProperty(EditMission task);
         /// <summary>
         /// 分配任务
         /// </summary>
@@ -245,5 +274,9 @@ namespace TaskLogic
         /// <param name="userId"></param>
         /// <returns></returns>
         int QueryUserMissionCount(int userId);
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        void Release();
     }
 }

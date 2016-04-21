@@ -9,8 +9,17 @@ namespace TaskTest_Web.Models
     {
         TableStr = 0,
 
-        SqlConStr = 1
+        SqlConStr = 1,
 
+        OracleConStr = 2,
+
+        MySqlConStr = 3,
+        /// <summary>
+        /// 程序运行方式
+        /// </summary>
+        ProgramMode = 11,
+
+        CookieName = 12
     }
 
     /// <summary>
@@ -29,6 +38,12 @@ namespace TaskTest_Web.Models
                     break;
                 case ParamType.SqlConStr:
                     paramStr = "Data Source=.;Initial Catalog=ShineTech_Test;User ID=sa;Password=sa"; // GetXmlValue("");
+                    break;
+                case ParamType.ProgramMode:
+                    paramStr = "1"; // 0: ADO.NET-DAL Mode,  1: Entity Framework Mode
+                    break;
+                case ParamType.CookieName:
+                    paramStr = "UName";
                     break;
             }
 
